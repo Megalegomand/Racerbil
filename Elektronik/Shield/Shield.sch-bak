@@ -46,4 +46,21 @@ F 3 "" H 4100 3400 50  0001 C CNN
 	2    4100 3550
 	1    0    0    -1  
 $EndComp
+$Comp
+L Device:R_Small R1
+U 1 1 5E67996A
+P 7600 3800
+F 0 "R1" H 7659 3846 50  0000 L CNN
+F 1 "R_Small" H 7659 3755 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 7600 3800 50  0001 C CNN
+F 3 "~" H 7600 3800 50  0001 C CNN
+	1    7600 3800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7100 3500 7600 3500
+Wire Wire Line
+	7600 3500 7600 3700
+Wire Wire Line
+	7600 3900 7100 3900
 $EndSCHEMATC
