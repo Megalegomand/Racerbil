@@ -2,10 +2,20 @@
 //
 
 #include <iostream>
+#include <windows.h>
+#include <CSerial>
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	CSerial serial;
+	if (serial.Open(2, 9600))
+	{
+		static char* szMessage[] = "This is test data";
+		int nBytesSent = serial.SendData(szMessage, strlen(szMessage));
+		ASSERT(nBytesSent == strlen(szMessage));
+	}
+	else
+		AfxMessageBox("Failed to open port!");
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
