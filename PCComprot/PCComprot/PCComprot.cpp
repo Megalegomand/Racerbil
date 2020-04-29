@@ -1,20 +1,77 @@
-// PCComprot.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// BluetoothTest.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-
 #include <iostream>
+#include <WinSock2.h>
+#include <winsock.h>
+#include <windows.h>
+#include <ws2bth.h>
+
+#pragma comment(lib, "ws2_32.lib")
+
+using namespace std;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    WSADATA wsaData;
+    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (iResult != NO_ERROR) {
+        wprintf(L"WSAStartup function failed with error: %d\n", iResult);
+        return 1;
+    }
+    // Ops�tning af socket
+    SOCKET s;
+    s = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
+    if (s == INVALID_SOCKET) {
+        wprintf(L"socket function failed with error: %ld\n", WSAGetLastError());
+        WSACleanup();
+        return 1;
+    }
+    //Ops�tning af bth socket adresse
+    _SOCKADDR_BTH sbth;
+    //memset(&sbth, 0, sizeof(SOCKADDR_BTH));
+    sbth.addressFamily = AF_BTH;
+    sbth.serviceClassId = RFCOMM_PROTOCOL_UUID;
+    sbth.btAddr = BTH_ADDR(0x00066619FD59);
+    sbth.port = 0;
+
+    // Tilslutning til bluetooth module
+    iResult = connect(s, (sockaddr*)&sbth, sizeof(sbth));
+    if (iResult == SOCKET_ERROR) {
+        wprintf(L"connect function failed with error: %ld\n", WSAGetLastError());
+        iResult = closesocket(s);
+        if (iResult == SOCKET_ERROR)
+            wprintf(L"closesocket function failed with error: %ld\n", WSAGetLastError());
+        WSACleanup();
+        return 1;
+    }
+    //Modtagelse af data 
+    char recvbuf[200];
+    char sendbuf[1];
+    do {
+
+        iResult = recv(s, recvbuf, sizeof(recvbuf), 0);
+        if (iResult > 0) {
+            printf("Bytes received: %d\n", iResult);
+            for (int i = 0; i < iResult; i++) {
+                cout << recvbuf[i];
+            }
+            cout << endl;
+        }
+        else if (iResult == 0)
+            printf("Connection closed\n");
+        else
+            printf("recv failed: %d\n", WSAGetLastError());
+
+    } while (iResult > 0);
+    // Hvis error opst�r output error code, og cleanup wsa
+    iResult = closesocket(s);
+    if (iResult == SOCKET_ERROR) {
+        wprintf(L"closesocket function failed with error: %ld\n", WSAGetLastError());
+        WSACleanup();
+        return 1;
+    }
+    // hvis ingen fejl output recvbuf, send modtagelse og k�r cleanup
+    iResult = send(s, sendbuf, sizeof(sendbuf), 0);
+    WSACleanup();
+    return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

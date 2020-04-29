@@ -18,5 +18,16 @@
     <ClCompile Include="PCComprot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Send.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bluetooth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BLuetooth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

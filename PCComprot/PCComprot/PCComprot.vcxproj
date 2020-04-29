@@ -148,6 +148,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="PCComprot.cpp" />
+    <ClCompile Include="Bluetooth.cpp" />
+    <ClCompile Include="Send.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BLuetooth.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
