@@ -1,21 +1,21 @@
 ﻿#include "Bluetooth.h"
-Bluetooth::Bluetooth(char sendbuf, char recbuf)
+Bluetooth::Bluetooth(int sendbuf, int recbuf)
 {
-	recvbuff = recbuf;
-	sendbuff = sendbuf;
-	
+    recvbuff = new char[recbuf];
+    sendbuff = new char[sendbuf];
 }
 void Bluetooth::init()
 {
 
     WSADATA wsaData;
-    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (iResult != NO_ERROR) {
         wprintf(L"WSAStartup function failed with error: %d\n", iResult);
         
     }
     // Ops�tning af socket
-       /*sock = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM); skal indsættes i constructor*/
+    
+       s = socket(AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM); 
     if (s == INVALID_SOCKET) {
         wprintf(L"socket function failed with error: %ld\n", WSAGetLastError());
         WSACleanup();
@@ -38,5 +38,31 @@ void Bluetooth::init()
             wprintf(L"closesocket function failed with error: %ld\n", WSAGetLastError());
         WSACleanup();
         
+    }
+}
+void Bluetooth::receive() {
+    
+    do {
+
+        iResult = recv(s, recvbuff, sizeof(recvbuff), 0);
+        if (iResult > 0) {
+            printf("Bytes received: %d\n", iResult);
+            for (int i = 0; i < iResult; i++) {
+                cout << recvbuff[i];
+            }
+            cout << endl;
+        }
+        else if (iResult == 0)
+            printf("Connection closed\n");
+        else
+            printf("recv failed: %d\n", WSAGetLastError());
+
+    } while (iResult > 0);
+    // Hvis error opst�r output error code, og cleanup wsa
+    iResult = closesocket(s);
+    if (iResult == SOCKET_ERROR) {
+        wprintf(L"closesocket function failed with error: %ld\n", WSAGetLastError());
+        WSACleanup();
+     
     }
 }
